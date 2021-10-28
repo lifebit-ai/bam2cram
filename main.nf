@@ -28,7 +28,6 @@ if (params.help) {
 
 // Define channels from repository files
 projectDir = workflow.projectDir
-ch_run_sh_script = Channel.fromPath("${projectDir}/bin/run.sh")
 
 // Define Channels from input
 Channel
@@ -38,8 +37,62 @@ Channel
     .map {sample_name, file_path -> [ sample_name, file_path ] }
     .set { ch_input }
 
-// Define Process
-process step_1 {
+process samtools {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_1
+    file(reference) from ch_reference_1
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view -T $reference -C -o ${sample_name}_samtools.cram $bam_file
+    """
+  }
+
+process cramtools {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_2
+    file(reference) from ch_reference_2
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools faidx $reference
+    java -jar /cramtools/cramtools-2.1.jar cram --lossless-quality-score --capture-all-tags -I $bam_file -R $reference -O ${sample_name}_cramtools.cram
+    """
+  }
+
+process gzip {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_3
+    
+    output:
+    file "*.gz"
+
+    script:
+    """
+    gzip -k $bam_file
+    mv *.gz ${sample_name}_gzip.gz
+    """
+  }
+
+process pigz {
     tag "$sample_name"
     label 'low_memory'
     publishDir "${params.outdir}", mode: 'copy'
@@ -49,28 +102,12 @@ process step_1 {
     file(run_sh_script) from ch_run_sh_script
     
     output:
-    file "input_file_head.txt" into ch_out
+    file "*.gz"
 
     script:
     """
-    run.sh
-    head $input_file > input_file_head.txt
+    pigz filename 
+    mv *.gz ${sample_name}_pigz.gz
     """
   }
 
-process report {
-    publishDir "${params.outdir}/MultiQC", mode: 'copy'
-
-    input:
-    file (table) from ch_out
-    
-    output:
-    file "multiqc_report.html" into ch_multiqc_report
-
-    script:
-    """
-    cp -r ${params.report_dir}/* .
-    Rscript -e "rmarkdown::render('report.Rmd',params = list(res_table='$table'))"
-    mv report.html multiqc_report.html
-    """
-}
