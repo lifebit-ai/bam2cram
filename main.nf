@@ -70,7 +70,7 @@ process cramtools {
     script:
     """
     samtools faidx $reference
-    java -jar /cramtools/cramtools-2.1.jar cram --lossless-quality-score --capture-all-tags -I $bam_file -R $reference -O ${sample_name}_cramtools.cram
+    cramtools cram --lossless-quality-score --capture-all-tags -I $bam_file -R $reference -O ${sample_name}_cramtools.cram
     """
   }
 
@@ -106,7 +106,7 @@ process pigz {
 
     script:
     """
-    pigz filename 
+    pigz -k filename 
     mv *.gz ${sample_name}_pigz.gz
     """
   }
