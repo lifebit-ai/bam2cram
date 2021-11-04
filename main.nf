@@ -80,7 +80,7 @@ process samtools_default_30 {
 
     input:
     file(bam_file) from ch_input_0
-    file(reference) from ch_reference_0
+    each file(reference) from ch_reference_0
     
     output:
     file "*.cram"
@@ -98,7 +98,7 @@ process samtools_default_31 {
 
     input:
     file(bam_file) from ch_input_1
-    file(reference) from ch_reference_1
+    each file(reference) from ch_reference_1
     
     output:
     file "*.cram"
@@ -116,7 +116,7 @@ process samtools_normal_30 {
 
     input:
     file(bam_file) from ch_input_2
-    file(reference) from ch_reference_2
+    each file(reference) from ch_reference_2
     
     output:
     file "*.cram"
@@ -134,7 +134,7 @@ process samtools_normal_31 {
 
     input:
     file(bam_file) from ch_input_3
-    file(reference) from ch_reference_3
+    each file(reference) from ch_reference_3
     
     output:
     file "*.cram"
@@ -152,7 +152,7 @@ process samtools_fast_30 {
 
     input:
     file(bam_file) from ch_input_4
-    file(reference) from ch_reference_4
+    each file(reference) from ch_reference_4
     
     output:
     file "*.cram"
@@ -170,7 +170,7 @@ process samtools_fast_31 {
 
     input:
     file(bam_file) from ch_input_5
-    file(reference) from ch_reference_5
+    each file(reference) from ch_reference_5
     
     output:
     file "*.cram"
@@ -188,7 +188,7 @@ process samtools_small_30 {
 
     input:
     file(bam_file) from ch_input_6
-    file(reference) from ch_reference_6
+    each file(reference) from ch_reference_6
     
     output:
     file "*.cram"
@@ -206,7 +206,7 @@ process samtools_small_31 {
 
     input:
     file(bam_file) from ch_input_7
-    file(reference) from ch_reference_7
+    each file(reference) from ch_reference_7
     
     output:
     file "*.cram"
@@ -224,7 +224,7 @@ process samtools_archive_30 {
 
     input:
     file(bam_file) from ch_input_8
-    file(reference) from ch_reference_8
+    each file(reference) from ch_reference_8
     
     output:
     file "*.cram"
@@ -242,7 +242,7 @@ process samtools_archive_31 {
 
     input:
     file(bam_file) from ch_input_9
-    file(reference) from ch_reference_9
+    each file(reference) from ch_reference_9
     
     output:
     file "*.cram"
@@ -260,7 +260,7 @@ process samtools_archive_lzma_30 {
 
     input:
     file(bam_file) from ch_input_10
-    file(reference) from ch_reference_10
+    each file(reference) from ch_reference_10
     
     output:
     file "*.cram"
@@ -278,7 +278,7 @@ process samtools_archive_lzma_31 {
 
     input:
     file(bam_file) from ch_input_11
-    file(reference) from ch_reference_11
+    each file(reference) from ch_reference_11
     
     output:
     file "*.cram"
