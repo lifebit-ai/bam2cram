@@ -34,7 +34,7 @@ Channel
     .fromPath(params.input)
     .ifEmpty { exit 1, "Cannot find input file : ${params.input}" }
     .splitCsv(skip:1)
-    .map {sample_name, file_path -> [ sample_name, file_path ] }
+    .map {sample_name, bam, bai -> [ sample_name, bam, bai ] }
     .set { ch_input }
 
 ch_input.into{ch_input_1;
@@ -90,7 +90,7 @@ process samtools_default {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_1
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_1
     file(reference) from ch_reference_1
     
     output:
@@ -108,7 +108,7 @@ process samtools_normal_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_2
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_2
     file(reference) from ch_reference_2
     
     output:
@@ -126,7 +126,7 @@ process samtools_normal_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_3
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_3
     file(reference) from ch_reference_3
     
     output:
@@ -144,7 +144,7 @@ process samtools_fast_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_4
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_4
     file(reference) from ch_reference_4
     
     output:
@@ -162,7 +162,7 @@ process samtools_fast_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_5
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_5
     file(reference) from ch_reference_5
     
     output:
@@ -180,7 +180,7 @@ process samtools_small_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_6
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_6
     file(reference) from ch_reference_6
     
     output:
@@ -198,7 +198,7 @@ process samtools_small_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_7
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_7
     file(reference) from ch_reference_7
     
     output:
@@ -216,7 +216,7 @@ process samtools_archive_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_8
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_8
     file(reference) from ch_reference_8
     
     output:
@@ -234,7 +234,7 @@ process samtools_archive_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_9
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_9
     file(reference) from ch_reference_9
     
     output:
@@ -252,7 +252,7 @@ process samtools_archive_lzma_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_10
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_10
     file(reference) from ch_reference_10
     
     output:
@@ -270,7 +270,7 @@ process samtools_archive_lzma_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_11
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_11
     file(reference) from ch_reference_11
     
     output:
