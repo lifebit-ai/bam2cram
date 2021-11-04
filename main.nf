@@ -60,7 +60,7 @@ Channel
     .ifEmpty { exit 1, "Cannot find input file : ${params.reference}" }
     .set { ch_reference }
 
-ch_reference.into{ch_reference_1;
+ch_reference.into{ch_reference_0;
                   ch_reference_1;
                   ch_reference_2;
                   ch_reference_3;
