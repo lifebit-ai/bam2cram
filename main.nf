@@ -79,7 +79,7 @@ process samtools_default_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file) from ch_input_0
+    set val(sample_name), file(bam_file), file(bai_file) from ch_input_0
     file(reference) from ch_reference_0
     
     output:
