@@ -6,17 +6,22 @@ def helpMessage() {
     nextflow run main.nf --input input.csv --reference reference.fasta [Options]
     
     Inputs Options:
-    --input         Input csv file with bam paths
+    --input         Input csv file with sample_id, bam and bai paths
     --reference     Reference fasta file
 
     Resource Options:
+    --cpus          Number of CPUs (int)
+                    (default: $params.cpus)  
     --max_cpus      Maximum number of CPUs (int)
-                    (default: $params.max_cpus)  
+                    (default: $params.max_cpus)
+    --memory        Memory (memory unit)
+                    (default: $params.memory)   
     --max_memory    Maximum memory (memory unit)
                     (default: $params.max_memory)
+    --time          Time limit (time unit)
+                    (default: $params.time)
     --max_time      Maximum time (time unit)
                     (default: $params.max_time)
-    See here for more info: https://github.com/lifebit-ai/hla/blob/master/docs/usage.md
     """.stripIndent()
 }
 
@@ -66,7 +71,7 @@ ch_reference.into{ch_reference_1;
                   ch_reference_10;
                   ch_reference_11}
 
-process samtools_default {
+process samtools_default_30 {
     tag "$sample_name"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
@@ -80,11 +85,11 @@ process samtools_default {
 
     script:
     """
-    samtools view -T $reference -C -o ${sample_name}.cram $bam_file
+    samtools view -T $reference -o ${sample_name}.cram -O cram,version=3.0 $bam_file
     """
   }
 
-process samtools_default {
+process samtools_default_31 {
     tag "$sample_name"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
@@ -98,7 +103,7 @@ process samtools_default {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -C -o ${sample_name}.cram $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1 $bam_file
     """
   }
 
