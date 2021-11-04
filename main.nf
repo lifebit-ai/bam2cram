@@ -74,7 +74,7 @@ ch_reference.into{ch_reference_0;
                   ch_reference_11}
 
 process samtools_default_30 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -92,7 +92,7 @@ process samtools_default_30 {
   }
 
 process samtools_default_31 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -110,7 +110,7 @@ process samtools_default_31 {
   }
 
 process samtools_normal_30 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -128,7 +128,7 @@ process samtools_normal_30 {
   }
 
 process samtools_normal_31 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -146,7 +146,7 @@ process samtools_normal_31 {
   }
 
 process samtools_fast_30 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -164,7 +164,7 @@ process samtools_fast_30 {
   }
 
 process samtools_fast_31 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -182,7 +182,7 @@ process samtools_fast_31 {
   }
 
 process samtools_small_30 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -200,7 +200,7 @@ process samtools_small_30 {
   }
 
 process samtools_small_31 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -218,7 +218,7 @@ process samtools_small_31 {
   }
 
 process samtools_archive_30 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -236,7 +236,7 @@ process samtools_archive_30 {
   }
 
 process samtools_archive_31 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -254,7 +254,7 @@ process samtools_archive_31 {
   }
 
 process samtools_archive_lzma_30 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
@@ -272,7 +272,7 @@ process samtools_archive_lzma_30 {
   }
 
 process samtools_archive_lzma_31 {
-    tag "$sample_name"
+    tag "$bam_file"
     label 'low_memory'
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
