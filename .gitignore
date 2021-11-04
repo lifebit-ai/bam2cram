@@ -12,6 +12,7 @@ results/
 # bioinformatics files
 *.fa
 *.fasta
+*.fasta.fai
 
 *.fq
 *.fastq
