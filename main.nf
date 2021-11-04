@@ -40,7 +40,6 @@ Channel
     .ifEmpty { exit 1, "Cannot find input file : ${params.input}" }
     .splitCsv(header:true)
     .map{ row -> file(row.bam) }
-    .flatten()
     .set { ch_input }
 
 ch_input.into{ch_input_0;
