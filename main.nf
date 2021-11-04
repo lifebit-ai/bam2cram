@@ -6,7 +6,7 @@ def helpMessage() {
     nextflow run main.nf --input input.csv --reference reference.fasta [Options]
     
     Inputs Options:
-    --input         Input csv file with sample_id, bam and bai paths
+    --input         Input csv file with bam paths
     --reference     Reference fasta file
 
     Resource Options:
@@ -38,9 +38,10 @@ projectDir = workflow.projectDir
 Channel
     .fromPath(params.input)
     .ifEmpty { exit 1, "Cannot find input file : ${params.input}" }
-    .splitCsv(skip:1)
-    .map {sample_name, bam, bai -> [ sample_name, bam, bai ] }
-    .set { ch_input }
+    .splitCsv(header:true)
+    .map{ row -> file(row.bam) }
+    .flatten()
+    .{ ch_input }
 
 ch_input.into{ch_input_0;
               ch_input_1;
@@ -58,7 +59,7 @@ ch_input.into{ch_input_0;
 Channel
     .fromPath(params.reference)
     .ifEmpty { exit 1, "Cannot find input file : ${params.reference}" }
-    .set { ch_reference }
+    .{ ch_reference }
 
 ch_reference.into{ch_reference_0;
                   ch_reference_1;
@@ -79,7 +80,7 @@ process samtools_default_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_0
+    file(bam_file) from ch_input_0
     file(reference) from ch_reference_0
     
     output:
@@ -87,7 +88,7 @@ process samtools_default_30 {
 
     script:
     """
-    samtools view -T $reference -o ${sample_name}.cram -O cram,version=3.0 $bam_file
+    samtools view -T $reference -o ${bam_file}.cram -O cram,version=3.0 $bam_file
     """
   }
 
@@ -97,7 +98,7 @@ process samtools_default_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_1
+    file(bam_file) from ch_input_1
     file(reference) from ch_reference_1
     
     output:
@@ -105,7 +106,7 @@ process samtools_default_31 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.1 $bam_file
     """
   }
 
@@ -115,7 +116,7 @@ process samtools_normal_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_2
+    file(bam_file) from ch_input_2
     file(reference) from ch_reference_2
     
     output:
@@ -123,7 +124,7 @@ process samtools_normal_30 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0 --output-fmt-option seqs_per_slice=10000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.0 --output-fmt-option seqs_per_slice=10000 $bam_file
     """
   }
 
@@ -133,7 +134,7 @@ process samtools_normal_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_3
+    file(bam_file) from ch_input_3
     file(reference) from ch_reference_3
     
     output:
@@ -141,7 +142,7 @@ process samtools_normal_31 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1 --output-fmt-option seqs_per_slice=10000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.1 --output-fmt-option seqs_per_slice=10000 $bam_file
     """
   }
 
@@ -151,7 +152,7 @@ process samtools_fast_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_4
+    file(bam_file) from ch_input_4
     file(reference) from ch_reference_4
     
     output:
@@ -159,7 +160,7 @@ process samtools_fast_30 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.0,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
     """
   }
 
@@ -169,7 +170,7 @@ process samtools_fast_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_5
+    file(bam_file) from ch_input_5
     file(reference) from ch_reference_5
     
     output:
@@ -177,7 +178,7 @@ process samtools_fast_31 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.1,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
     """
   }
 
@@ -187,7 +188,7 @@ process samtools_small_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_6
+    file(bam_file) from ch_input_6
     file(reference) from ch_reference_6
     
     output:
@@ -195,7 +196,7 @@ process samtools_small_30 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=6,use_bzip2=1 --output-fmt-option seqs_per_slice=25000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.0,level=6,use_bzip2=1 --output-fmt-option seqs_per_slice=25000 $bam_file
     """
   }
 
@@ -205,7 +206,7 @@ process samtools_small_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_7
+    file(bam_file) from ch_input_7
     file(reference) from ch_reference_7
     
     output:
@@ -213,7 +214,7 @@ process samtools_small_31 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=6,use_bzip2=1,use_fqz=1 --output-fmt-option seqs_per_slice=25000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.1,level=6,use_bzip2=1,use_fqz=1 --output-fmt-option seqs_per_slice=25000 $bam_file
     """
   }
 
@@ -223,7 +224,7 @@ process samtools_archive_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_8
+    file(bam_file) from ch_input_8
     file(reference) from ch_reference_8
     
     output:
@@ -231,7 +232,7 @@ process samtools_archive_30 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=7,use_bzip2=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.0,level=7,use_bzip2=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     """
   }
 
@@ -241,7 +242,7 @@ process samtools_archive_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_9
+    file(bam_file) from ch_input_9
     file(reference) from ch_reference_9
     
     output:
@@ -249,7 +250,7 @@ process samtools_archive_31 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     """
   }
 
@@ -259,7 +260,7 @@ process samtools_archive_lzma_30 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_10
+    file(bam_file) from ch_input_10
     file(reference) from ch_reference_10
     
     output:
@@ -267,7 +268,7 @@ process samtools_archive_lzma_30 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=7,use_bzip2=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.0,level=7,use_bzip2=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     """
   }
 
@@ -277,7 +278,7 @@ process samtools_archive_lzma_31 {
     publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(bam_file), file(bai_file) from ch_input_11
+    file(bam_file) from ch_input_11
     file(reference) from ch_reference_11
     
     output:
@@ -285,6 +286,6 @@ process samtools_archive_lzma_31 {
 
     script:
     """
-    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    samtools view --threads $task.cpus -T $reference -o ${bam_file}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     """
   }

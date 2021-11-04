@@ -1,5 +1,0 @@
-sample_id,bam,bai
-pb1_normal,s3://eu-west-1-example-data/nihr/testdata/pb_normal.bam,s3://eu-west-1-example-data/nihr/testdata/pb_normal.bam.bai
-pb1_tumor,s3://eu-west-1-example-data/nihr/testdata/pb_tumor.bam,s3://eu-west-1-example-data/nihr/testdata/pb_tumor.bam.bai
-pb2_normal,s3://eu-west-1-example-data/nihr/testdata/pb_normal.bam,s3://eu-west-1-example-data/nihr/testdata/pb_normal.bam.bai
-pb2_tumor,s3://eu-west-1-example-data/nihr/testdata/pb_tumor.bam,s3://eu-west-1-example-data/nihr/testdata/pb_tumor.bam.bai
