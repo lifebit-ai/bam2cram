@@ -3,11 +3,11 @@
 def helpMessage() {
     log.info """
     Usage:
-    The typical command for running the pipeline is as follows:
-    nextflow run main.nf --bams sample.bam [Options]
+    nextflow run main.nf --input input.csv --reference reference.fasta [Options]
     
     Inputs Options:
-    --input         Input file
+    --input         Input csv file with bam paths
+    --reference     Reference fasta file
 
     Resource Options:
     --max_cpus      Maximum number of CPUs (int)
@@ -37,10 +37,39 @@ Channel
     .map {sample_name, file_path -> [ sample_name, file_path ] }
     .set { ch_input }
 
-process samtools {
+ch_input.into{ch_input_1;
+              ch_input_2;
+              ch_input_3;
+              ch_input_4;
+              ch_input_5;
+              ch_input_6;
+              ch_input_7;
+              ch_input_8;
+              ch_input_9;
+              ch_input_10;
+              ch_input_11}
+
+Channel
+    .fromPath(params.reference)
+    .ifEmpty { exit 1, "Cannot find input file : ${params.reference}" }
+    .set { ch_reference }
+
+ch_reference.into{ch_reference_1;
+                  ch_reference_2;
+                  ch_reference_3;
+                  ch_reference_4;
+                  ch_reference_5;
+                  ch_reference_6;
+                  ch_reference_7;
+                  ch_reference_8;
+                  ch_reference_9;
+                  ch_reference_10;
+                  ch_reference_11}
+
+process samtools_default {
     tag "$sample_name"
     label 'low_memory'
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
     set val(sample_name), file(bam_file) from ch_input_1
@@ -51,14 +80,32 @@ process samtools {
 
     script:
     """
-    samtools view -T $reference -C -o ${sample_name}_samtools.cram $bam_file
+    samtools view -T $reference -C -o ${sample_name}.cram $bam_file
     """
   }
 
-process cramtools {
+process samtools_default {
     tag "$sample_name"
     label 'low_memory'
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_1
+    file(reference) from ch_reference_1
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -C -o ${sample_name}.cram $bam_file
+    """
+  }
+
+process samtools_normal_30 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
     set val(sample_name), file(bam_file) from ch_input_2
@@ -69,45 +116,168 @@ process cramtools {
 
     script:
     """
-    samtools faidx $reference
-    cramtools cram --lossless-quality-score --capture-all-tags -I $bam_file -R $reference -O ${sample_name}_cramtools.cram
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0 --output-fmt-option seqs_per_slice=10000 $bam_file
     """
   }
 
-process gzip {
+process samtools_normal_31 {
     tag "$sample_name"
     label 'low_memory'
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
     set val(sample_name), file(bam_file) from ch_input_3
+    file(reference) from ch_reference_3
     
     output:
-    file "*.gz"
+    file "*.cram"
 
     script:
     """
-    gzip -k $bam_file
-    mv *.gz ${sample_name}_gzip.gz
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1 --output-fmt-option seqs_per_slice=10000 $bam_file
     """
   }
 
-process pigz {
+process samtools_fast_30 {
     tag "$sample_name"
     label 'low_memory'
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
 
     input:
-    set val(sample_name), file(input_file) from ch_input
-    file(run_sh_script) from ch_run_sh_script
+    set val(sample_name), file(bam_file) from ch_input_4
+    file(reference) from ch_reference_4
     
     output:
-    file "*.gz"
+    file "*.cram"
 
     script:
     """
-    pigz -k filename 
-    mv *.gz ${sample_name}_pigz.gz
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
     """
   }
 
+process samtools_fast_31 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_5
+    file(reference) from ch_reference_5
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
+    """
+  }
+
+process samtools_small_30 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_6
+    file(reference) from ch_reference_6
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=6,use_bzip2=1 --output-fmt-option seqs_per_slice=25000 $bam_file
+    """
+  }
+
+process samtools_small_31 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_7
+    file(reference) from ch_reference_7
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=6,use_bzip2=1,use_fqz=1 --output-fmt-option seqs_per_slice=25000 $bam_file
+    """
+  }
+
+process samtools_archive_30 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_8
+    file(reference) from ch_reference_8
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=7,use_bzip2=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    """
+  }
+
+process samtools_archive_31 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_9
+    file(reference) from ch_reference_9
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    """
+  }
+
+process samtools_archive_lzma_30 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_10
+    file(reference) from ch_reference_10
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.0,level=7,use_bzip2=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    """
+  }
+
+process samtools_archive_lzma_31 {
+    tag "$sample_name"
+    label 'low_memory'
+    publishDir "${params.outdir}/${task.process}/", mode: 'copy'
+
+    input:
+    set val(sample_name), file(bam_file) from ch_input_11
+    file(reference) from ch_reference_11
+    
+    output:
+    file "*.cram"
+
+    script:
+    """
+    samtools view --threads $task.cpus -T $reference -o ${sample_name}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
+    """
+  }
