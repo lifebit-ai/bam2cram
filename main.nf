@@ -41,7 +41,7 @@ Channel
     .splitCsv(header:true)
     .map{ row -> file(row.bam) }
     .flatten()
-    .{ ch_input }
+    .set { ch_input }
 
 ch_input.into{ch_input_0;
               ch_input_1;
@@ -59,7 +59,7 @@ ch_input.into{ch_input_0;
 Channel
     .fromPath(params.reference)
     .ifEmpty { exit 1, "Cannot find input file : ${params.reference}" }
-    .{ ch_reference }
+    .set { ch_reference }
 
 ch_reference.into{ch_reference_0;
                   ch_reference_1;
