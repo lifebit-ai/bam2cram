@@ -87,8 +87,10 @@ process samtools_default_30 {
 
     script:
     """
+    ${params.pre_script}
     samtools view -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.0 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -106,8 +108,10 @@ process samtools_default_31 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.1 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -125,8 +129,10 @@ process samtools_normal_30 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.0 --output-fmt-option seqs_per_slice=10000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -144,8 +150,10 @@ process samtools_normal_31 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.1 --output-fmt-option seqs_per_slice=10000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -163,8 +171,10 @@ process samtools_fast_30 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.0,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -182,8 +192,10 @@ process samtools_fast_31 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.1,level=1 --output-fmt-option seqs_per_slice=1000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -201,8 +213,10 @@ process samtools_small_30 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.0,level=6,use_bzip2=1 --output-fmt-option seqs_per_slice=25000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -220,8 +234,10 @@ process samtools_small_31 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.1,level=6,use_bzip2=1,use_fqz=1 --output-fmt-option seqs_per_slice=25000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -239,8 +255,10 @@ process samtools_archive_30 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.0,level=7,use_bzip2=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -258,8 +276,10 @@ process samtools_archive_31 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -277,8 +297,10 @@ process samtools_archive_lzma_30 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.0,level=7,use_bzip2=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }
 
@@ -296,7 +318,9 @@ process samtools_archive_lzma_31 {
 
     script:
     """
+    ${params.pre_script}
     samtools view --threads $task.cpus -T $reference -o ${bam_file.simpleName}.cram -O cram,version=3.1,level=7,use_bzip2=1,use_fqz=1,use_arith=1,use_lzma=1 --output-fmt-option seqs_per_slice=100000 $bam_file
     samtools index ${bam_file.simpleName}.cram
+    ${params.post_script}
     """
   }

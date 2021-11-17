@@ -18,3 +18,4 @@ jobs:
       - name: Basic workflow tests
         run: |
           nextflow run ${GITHUB_WORKSPACE} --config conf/test.config
+          echo "Results tree view:" ; tree -a results; head  results/**/*txt
